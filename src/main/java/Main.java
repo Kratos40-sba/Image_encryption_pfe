@@ -1,5 +1,4 @@
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class Main {
@@ -8,28 +7,32 @@ public class Main {
     static String WriteUrl = "/home/kratos40/IdeaProjects/PFE_V0/src/main/pfe_files/";
     static byte[] Mk = new byte[]{(byte) Math.floorMod(0x80, 256), (byte) Math.floorMod(0xb1, 256), (byte) Math.floorMod(0x53, 256), (byte) Math.floorMod(0x69, 256),
             (byte) Math.floorMod(0x30, 256), (byte) Math.floorMod(0x11, 256), (byte) Math.floorMod(0x2b, 256), (byte) Math.floorMod(0x09, 256)};
-    static String MK_S = "thisismysecretkey";
 
     public static void main(String[] args) {
         try {
-            var dkv = Init.Dkv(MK_S.getBytes(StandardCharsets.UTF_8));
-            System.out.println("******************* Normal Bloc from image ******************");
+            var dkv = Init.Dkv(Mk);
             List<int[][]> blocks = ImageUtils.decompose(new File(url));
             // ImageUtils.compose(blocks,new File(WriteUrl+"/composed.bmp"),512,512);
-            MathUtils.print(blocks.get(20));
-            var encrypted_image = Encryption.enc(blocks.get(20), dkv);
-            System.out.println("******************* Encrypted Bloc ******************");
-            MathUtils.print(encrypted_image);
-            var decrypted_image = Encryption.dec(encrypted_image, dkv);
-            System.out.println("******************* Decrypted Bloc ******************");
-            MathUtils.print(decrypted_image);
-
+            List<int[][]> encrypted_image = Encryption.encrypt_image(blocks, dkv);
+            ImageUtils.compose(encrypted_image, new File(WriteUrl + "/encrypted.bmp"), 512, 512);
+            List<int[][]> decrypted_image = Encryption.decrypt_image(encrypted_image, dkv);
+            System.out.println(decrypted_image.size() + " " + encrypted_image.size());
+            ImageUtils.compose(decrypted_image, new File(WriteUrl + "/decrypted.bmp"), 512, 512);
 
         } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 }
+/*
+  MathUtils.print(blocks.get(100));
+            var encrypted_image1 = Encryption.encrypt_block(blocks.get(100), dkv,Init.Im1(dkv));
+            System.out.println("******************* Encrypted Bloc ******************");
+            MathUtils.print(encrypted_image1);
+            var decrypted_image2 = Encryption.decrypt_block(encrypted_image1, dkv,Init.Im1(dkv));
+            System.out.println("******************* Decrypted Bloc ******************");
+            MathUtils.print(decrypted_image2);
+ */
 /*
     var g = Init.G(dkv);
             var g_inv = Init.Inv_G(dkv);

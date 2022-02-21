@@ -34,6 +34,17 @@ public class Init {
         return MathUtils.array_to_matrix_byte(O1);
     }
 
+    public static int[][] Im2(byte[] dkv) throws Throwable {
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+        byte[] O1 = messageDigest.digest(dkv);
+        byte[] O2 = messageDigest.digest(O1);
+
+        for (int i = 0; i < O2.length; i++) {
+            O2[i] = (byte) ((byte) (Math.floorMod(O2[i], 256)));
+        }
+        return MathUtils.array_to_matrix_byte(O2);
+    }
+
     public static int[][] G(byte[] dkv) {
         int[][] M = {
                 {dkv[0], dkv[8], dkv[16], dkv[24]},
