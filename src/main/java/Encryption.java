@@ -1,26 +1,21 @@
 public class Encryption {
-    // encryption = secret key + image.
-    // decryption = secret key + encrypted image .
     public static int[][] enc(int[][] image_sub_bloc, byte[] dkv) throws Throwable {
-        /*
+
          int[][] im = Init.Im1(dkv);
         int[][] y  = new int[8][8];
         for(int i =0 ; i<8 ; i++)
             for (int j =0 ; j <8 ; j++) {
                 y[i][j] = Math.floorMod((byte) image_sub_bloc[i][j] ^ im[i][j],256) ;
             }
-         */
-
         // multiplication
         int[][] g = Init.G(dkv);
         int[][] encrypted_image = new int[8][8];
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++) {
-
                 for (int k = 0; k < 8; k++) {
-                    encrypted_image[i][j] += g[i][k] * image_sub_bloc[k][j];
+                    encrypted_image[i][j] += g[i][k] * y[k][j];
                 }
-                encrypted_image[i][j] = ((byte) Math.floorMod(encrypted_image[i][j], 256));
+                encrypted_image[i][j] = (Math.floorMod(encrypted_image[i][j], 256));
             }
         /*
                 int []y_vec = MathUtils.matrix_to_array(y);
@@ -41,32 +36,23 @@ public class Encryption {
     }
 
     public static int[][] dec(int[][] enc_matrix, byte[] dkv) throws Throwable {
-
-
         int[][] D = new int[8][8];
         int[][] inv_G = Init.Inv_G(dkv);
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++) {
-
                 for (int k = 0; k < 8; k++) {
-
                     D[i][j] += (inv_G[i][k] * enc_matrix[k][j]);
                 }
-
                 D[i][j] = Math.floorMod((byte) D[i][j], 256);
             }
-           /*
               int[][] im = Init.Im1(dkv);
         for(int i =0 ; i<8 ; i++)
             for (int j =0 ; j <8 ; j++) {
                 enc_matrix[i][j] = Math.floorMod((byte)D[i][j] ^ im[i][j]  ,256) ;
             }
-            */
-
-
         // Inv sub
         //int[][] decrypted_image = new int[8][8];
-        return D;
+        return enc_matrix;
     }
 
 }

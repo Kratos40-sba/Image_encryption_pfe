@@ -13,7 +13,25 @@ public class Main {
     public static void main(String[] args) {
         try {
             var dkv = Init.Dkv(MK_S.getBytes(StandardCharsets.UTF_8));
-            var g = Init.G(dkv);
+            System.out.println("******************* Normal Bloc from image ******************");
+            List<int[][]> blocks = ImageUtils.decompose(new File(url));
+            // ImageUtils.compose(blocks,new File(WriteUrl+"/composed.bmp"),512,512);
+            MathUtils.print(blocks.get(20));
+            var encrypted_image = Encryption.enc(blocks.get(20), dkv);
+            System.out.println("******************* Encrypted Bloc ******************");
+            MathUtils.print(encrypted_image);
+            var decrypted_image = Encryption.dec(encrypted_image, dkv);
+            System.out.println("******************* Decrypted Bloc ******************");
+            MathUtils.print(decrypted_image);
+
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+}
+/*
+    var g = Init.G(dkv);
             var g_inv = Init.Inv_G(dkv);
             int[][] M = {
                     {dkv[0], dkv[8], dkv[16], dkv[24]},
@@ -31,26 +49,6 @@ public class Main {
             MathUtils.print(g);
             System.out.println("******************* G-INV *****************");
             MathUtils.print(g_inv);
-
-
-            System.out.println("******************* Normal Bloc from image ******************");
-            List<int[][]> blocks = ImageUtils.decompose(new File(url));
-            // ImageUtils.compose(blocks,new File(WriteUrl+"/composed.bmp"),512,512);
-            MathUtils.print(blocks.get(1));
-            var encrypted_image = Encryption.enc(blocks.get(1), dkv);
-            System.out.println("******************* Encrypted Bloc ******************");
-            MathUtils.print(encrypted_image);
-            var decrypted_image = Encryption.dec(encrypted_image, dkv);
-            System.out.println("******************* Decrypted Bloc ******************");
-            MathUtils.print(decrypted_image);
-
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-}
-/*
 
  */
 /*
