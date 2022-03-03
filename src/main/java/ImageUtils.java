@@ -39,7 +39,6 @@ public class ImageUtils {
                     for (int y = i, sy = 0; y < (i + 8); y++, sy++) {
                         Color color = new Color(blocks.get(s)[sy][sx], blocks.get(s)[sy][sx], blocks.get(s)[sy][sx], 255);
                         bufferedImage.setRGB(x, y, color.getRGB());
-
                     }
                 }
                 s++;

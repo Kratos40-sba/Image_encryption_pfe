@@ -3,16 +3,6 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class Init {
-    public static int[] s_box = {
-            144, 25, 58, 33, 69, 50, 102, 200,
-            222, 250, 95, 133, 169, 150, 2, 208,
-            3, 28, 147, 110, 206, 101, 173, 244,
-            44, 25, 159, 37, 18, 29, 147, 110,
-            22, 65, 199, 207, 47, 27, 154, 122,
-            9, 5, 180, 211, 39, 119, 54, 141,
-            24, 45, 158, 11, 92, 211, 4, 193,
-            14, 31, 76, 7, 19, 251, 1, 209,
-    };
 
     public static byte[] Dkv(byte[] key) throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
@@ -123,5 +113,54 @@ public class Init {
 
             }
         return G;
+    }
+
+    public static int[] s_box_generation(byte[] dkv) {
+        int[] ks = new int[8];
+        int[] r = new int[4];
+        int[] t = new int[4];
+        int[][] temp = MathUtils.array_to_matrix_byte(dkv);
+        int[] v = new int[256];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ks[i] = Math.floorMod((byte) temp[i][j] ^ ks[i], 256);
+            }
+        }
+        int ir = 0;
+        int it = 0;
+        for (int k : ks) {
+            if (k % 2 == 0) {
+                r[ir] = k;
+                // change the lsb to 0
+                r[ir] = r[ir] ^ (r[ir] & 1);
+                ir++;
+            } else {
+                t[it] = k;
+                // change lsb to 1
+                t[it] |= 1;
+                it++;
+            }
+        }
+        for (int i = 0; i < 256; i++) {
+            v[i] = i;
+        }
+        for (int j = 1; j < 256; j++) {
+            for (int i = 0; i < 4; i++) {
+                v[j] = Math.floorMod((v[j] * ((v[j - 1] * r[i]) + t[i])), 256);
+            }
+
+        }
+
+        return v;
+
+
+    }
+
+    public static int[] inv_s_box(int[] s_box) {
+        int[] inv_s_box = new int[256];
+        for (int i = 0; i < 256; i++) {
+            inv_s_box[s_box[i]] = i;
+        }
+        return inv_s_box;
     }
 }
